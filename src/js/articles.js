@@ -2,36 +2,60 @@ import '../css/articles.css';
 
 import MainApi from './api/MainApi';
 import Header from './components/Header';
+import MyArticles from './components/MyArticles';
+import Popup from './components/Popup';
 
-import { menuContainer } from './constants/elements'; // импорт контейнера попапа и классов кнопок
+import { isAuth } from './utils/helpers';
+import {
+  popupContainer, menuContainer, exitButtonClass, sandwichButtonClass,
+} from './constants/elements';
 
-import { loggedMenuArticlesMarkup } from './constants/markups'; // импорт разметки
+import { menuArticlesMarkup, myCardsMarkup, popupArtMenuMarkup } from './constants/markups'; // импорт разметки
 
 const mainApi = new MainApi();
 const header = new Header(menuContainer);
+const myArticles = new MyArticles(mainApi);
+const popup = new Popup(popupContainer, '', '');
+let myCards = [];
+const keys = [];
+let ownerName;
 
-mainApi.getMe()
-  .then((data) => { if (data) {header.setMenu(loggedMenuArticlesMarkup, data.name)} })
-  .catch((err) => console.log(err)); // ставим хедер если есть токен и может получить имя
+if (isAuth()) {
+  mainApi.getMe() // ставим  хедер с именем либо редирект
+    .then((data) => {
+      if (data) {
+        ownerName = data.name;
+        header.setMenu(menuArticlesMarkup, ownerName);
+        myArticles.setName(data.name);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+} else { location = 'index.html'; }
 
+mainApi.getArticles()
+  .then((res) => { myCards = res.data; })
+  .then((arr) => {
+    
+    myArticles.setNumber(myCards.length);
+    myArticles.setStringOfKeys((myCards));
+    myArticles.removeSection();
+    if (myCards.length !== 0) {
+      myArticles.setSection(myCardsMarkup);
+      myArticles.addMycards(myCards);
+    }
+  });
 
-// import FormValidator from './FormValidator.js';
-// import Popup from './Popup.js';
-
-// // dom-элементы, для работы с методами классов
-
-// const popupLoginContainer = document.querySelector('.popup_type_login');
-// const popupSignupContainer = document.querySelector('.popup_type_signup');
-// const popupMenuContainer = document.querySelector('.popup_type_menu');
-
-// // тексты ошибок
-// const errorsMessages = {
-//   validateNameL: 'Имя должно быть от 2 до 30 символов',
-//   validateEmail: 'Неправильный формат email',
-//   validatePasswordL: 'Пароль должен быть не менее 8 символов',
-// };
-
-// const validator = new FormValidator(errorsMessages); // создаем валидатор, передаем тексты ошибок
-// const loginPopup = new Popup(popupLoginContainer, '.button_type_login', validator); // создаем попап для авторизации
-// const signupPopup = new Popup(popupSignupContainer, '.button_type_signup', validator); // создаем попап для регистрации
-// const menuPopup = new Popup(popupMenuContainer, '.button_type_menu'); // создаем попап для выпадающего меню
+document.addEventListener(('click'), (event) => {
+  if (event.target.className.includes(exitButtonClass)) {
+    localStorage.removeItem('token'); // удаление токена
+    location = 'index.html';
+    popup.close();
+  }
+  if (event.target.className.includes(sandwichButtonClass)) {
+    popup.setContent(popupArtMenuMarkup);
+    popup.setNameOnButton(ownerName);
+    popup.open();
+  }
+});

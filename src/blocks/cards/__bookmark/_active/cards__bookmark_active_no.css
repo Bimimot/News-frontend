@@ -1,0 +1,29 @@
+.cards__bookmark_active_no{
+  background: url(../../../../images/bookmark-black.svg) center no-repeat;
+}
+
+@media screen and (min-width: 1024px) {
+  .cards__bookmark_active_no:hover::after
+  {
+    position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 40px;
+        width: max-content;
+            padding: 0 10px;
+            border-radius: 8px;
+            background-color: white;
+            font-family: Roboto, Times, serif;
+            font-weight: 500;
+            font-size: 12px;
+            line-height: 14px;
+                z-index: 5;
+
+                top: 0px;
+                right: 49px;
+                content: 'Войдите, чтобы сохранять статьи';
+
+
+  }
+}

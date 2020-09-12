@@ -21,82 +21,18 @@
         <li class="header__link header__link_type_button button_type_login"> Авторизоваться
         </li>
       </ul>
-      <button class="header__sandwich button_type_menu">
-        <img class="icons" alt="sandwich-icon" src="<%=require('../images/icon-sandwich.png').default%>">
+      <button class="header__sandwich header__sandwich_type_dark button_type_menu">
       </button>
     </header>
     <section class="search">
       <h1 class="search__title">Что в мире творится?</h1>
       <p class="search__subtitle">Находите самые свежие статьи на любую тему и сохраняйте в своём личном кабинете.</p>
       <form class="search__form" novalidate>
-        <input type="text" class="search__input" placeholder="Введите тему новости" required></input>
+        <input type="text" class="search__input" placeholder="Введите тему новости" required> </input>
         <button type="submit" class="search__button">Искать</button>
       </form>
-
-
     </section>
-
   </div>
-  <section class="cards">
-    <h2 class="cards__title title-section">Результаты поиска</h2>
-    <div class="cards__grid">
-      <div class="cards__item">
-        <div class="cards__image-container">
-          <button class="cards__bookmark cards__bookmark_clicked_off"> </button>
-          <img class="cards__photo" alt="photo" src="<%=require('../images/card-1.jpg').default%>">
-        </div>
-        <div class="cards__text">
-          <p class="cards__item-date">31 июня, 2020</p>
-          <h3 class="cards__item-title">Национальное достояние – парки</h3>
-          <p class="cards__item-article">В 2016 году Америка отмечала важный юбилей: сто лет назад здесь начала
-            складываться система национальных парков – охраняемых территорий, где и сегодня каждый может приобщиться к
-            природе.</p>
-          <p class="cards__sign">ЛЕНТА.РУ</p>
-        </div>
-      </div>
-
-      <div class="cards__item">
-        <div class="cards__image-container">
-          <button class="cards__bookmark cards__bookmark_clicked_off"> </button>
-          <img class="cards__photo" alt="photo" src="<%=require('../images/card-2.jpg').default%>">
-        </div>
-        <div class="cards__text">
-          <p class="cards__item-date">2 августа, 2019</p>
-          <h3 class="cards__item-title">Лесные огоньки: история одной фотографии</h3>
-          <p class="cards__item-article">Фотограф отвлеклась от освещения суровой политической реальности Мексики,
-            чтобы
-            запечатлеть ускользающую красоту одного из местных чудес природы.</p>
-          <p class="cards__sign">МЕДУЗА</p>
-        </div>
-      </div>
-
-      <div class="cards__item">
-        <div class="cards__image-container">
-          <button class="cards__bookmark cards__bookmark_clicked_off"> </button>
-          <img class="cards__photo" alt="photo" src="<%=require('../images/card-3.jpg').default%>">
-        </div>
-        <div class="cards__text">
-          <p class="cards__item-date">55 апреля, 2030</p>
-          <h3 class="cards__item-title">«Первозданная тайга»: новый фотопроект Игоря Шпиленка</h3>
-          <p class="cards__item-article">Знаменитый фотограф снимает первозданные леса России, чтобы рассказать о
-            необходимости их сохранения. В этот раз он отправился в Двинско-Пинежскую тайгу, где...</p>
-          <p class="cards__sign">РИА</p>
-        </div>
-      </div>
-
-    </div>
-    <button class="cards__button">Показать ещё</button>
-  </section>
-
-  <section class="cards">
-    <i class="circle-preloader"></i>
-    <p class="cards__comment">Идёт поиск новостей</p>
-  </section>
-  <section class="cards" style="border-top: 1px solid white;">
-    <img src="<%=require('../images/smile-sad.png').default%>" alt="sad-smile" class="smile">
-    <p class="cards__message">Ничего не найдено</p>
-    <p class="cards__comment">К сожалению по вашему запросу ничего не найдено</p>
-  </section>
 
   <section class="author">
     <img class="author__photo" alt="author-photo" src="<%=require('../images/author-photo.jpg').default%>">
@@ -139,27 +75,7 @@
 </div>
 
 
-  <!-- <div class="popup popup_type_menu">
-    <div class="popup__content_type_menu">
-      <header class="header header_type_dark">
-        <img class="header__logo" alt="header-logo" src="<%=require('../images/news-logo.svg').default%>">
-      </header>
-      <img src="<%=require('../images/close.png').default%>" alt="" class="popup__close">
-      <ul class="popup__menu">
-        <li class="header__link">
-          <a class="links" href="index.html">Главная</a>
-        </li>
-
-        <li class="header__link">
-          <a class="links" href="articles.html">Сохранённые</a>
-        </li>
-        <li class="header__link header__link_type_button button_type_login"> Авторизоваться
-        </li>
-      </ul>
-    </div>
-  </div> -->
-
-  <script src="<%= htmlWebpackPlugin.files.js %>"></script>
+<script src="<%= htmlWebpackPlugin.files.js %>"></script>
 
 </body>
 

@@ -1,8 +1,7 @@
 export default class MainApi {
   constructor() {
     this.url = 'https://newsfinder.tk/api';
-    // this.url = 'http://localhost:3000/api';
-
+//    this.url = 'http://localhost:3000/api';
   }
 
   login(mail, pass) {
@@ -30,7 +29,7 @@ export default class MainApi {
         // credentials: 'include',
       })
         .then((res) => res.json())
-        .then((result) => {return (result.data)})
+        .then((result) => (result.data))
 
     );
   }
@@ -44,71 +43,61 @@ export default class MainApi {
         body: JSON.stringify({
           email: mail,
           password: pass,
-          name: name
+          name,
         }),
       })
     );
   }
 
+  createArticle(cardData) {
+    return (
+      fetch((`${this.url}/articles`), {
+        method: 'POST',
+        headers: {
+          authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          keyword: cardData.cardKey,
+          title: cardData.cardTitle,
+          text: cardData.cardText,
+          date: cardData.cardDateIso,
+          source: cardData.cardSign,
+          link: cardData.cardUrl,
+          image: cardData.cardImageUrl,
+        }),
+        // credentials: 'include',
+      })
+        .then((res) => res.json())
+    );
+  }
+
+  removeArticle(id) {
+    return (
+      fetch((`${this.url}/articles/${id}`), {
+        method: 'DELETE',
+        headers: {
+          authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+        // credentials: 'include',
+      })
+        .then((res) => res.json())
+    );
+  }
+
+  getArticles() {
+    return (
+      fetch((`${this.url}/articles/`), {
+        method: 'GET',
+        headers: {
+          authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+        // credentials: 'include',
+      })
+        .then((res) => res.json())
+    );
+  }
 }
 
-// signup(){
-
-// }
-
-// getUserData(){
-
-// }
-
-// getArticles(){
-
-// }
-
-// createArticle(){
-
-// }
-
-// removeArticle(){
-
-// }
-
-// setProfile(newName, newAbout) {                                                                       //передаем новые данные профиля
-//   return (
-//     fetch((this.baseUrl + '/users/me'), {
-//       method: 'PATCH',
-//       headers: this.headers,
-//       body: JSON.stringify({
-//         name: newName,
-//         about: newAbout
-//       })
-//     })
-//     .then(res => {
-//       if (res.ok) {
-//         return res.json();
-//       }
-//       return Promise.reject(`Ошибка: ${res.status}`);
-//     })
-//   )
-// }
-
-// const api = new Api({
-//   baseUrl: 'https://praktikum.tk/cohort10',
-//   headers: {
-//     authorization: 'caf701ff-6f39-4585-92c8-ebdddadba86b',
-//     'Content-Type': 'application/json'
-//   }
-// });
-
-// getUser() {                                                                                             //получаем данные пользователя
-//   return(
-//   fetch((this.baseUrl + '/users/me'), {
-//     headers: this.headers
-//   })
-//   .then(res => {
-//     if (res.ok) {
-//       return res.json();
-//     }
-//     return Promise.reject(`Ошибка: ${res.status}`);
-//   })
-// )
-// }

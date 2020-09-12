@@ -3,21 +3,23 @@ export default class Header {
     this.menuContainer = menuContainer;
   }
 
-  setMenu(menuMarkup, name) { // устанавливаем новый список заголовков в хэдео
+  setMenu(menuMarkup, name) { // установка нового списка в хедер
     this.clearMenu();
     this.menuContainer.insertAdjacentHTML('beforeend', menuMarkup);
-    if (name && name !== '') { this.setNameOnButton(name); }
+    if (name && name !== '') {
+      this.setNameOnButton(name);
+    }
   }
 
-  clearMenu() { // убираем список заголовков из хэдера
+  clearMenu() { // очистка списка заголовков из хэдера
     while (this.menuContainer.firstChild) {
       this.menuContainer.removeChild(this.menuContainer.firstChild);
     }
   }
 
-  setNameOnButton(name) {
+  setNameOnButton(name) { // установка имени на кнопку
     this.menuContainer.querySelector('.header__link_type_button')
-      .querySelector('.links')
-      .textContent = name;
+      .querySelector('.header__name')
+      .textContent = `${name}\xa0`;
   }
 }

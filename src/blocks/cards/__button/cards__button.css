@@ -3,6 +3,7 @@
     justify-content: center;
     align-items: center;
        border: none;
+       outline: none;
        background-color: #ffffff;
           font-family: Roboto, Arial, sans-serif;
           font-style: normal;
@@ -11,6 +12,11 @@
           line-height: 24px;
           transition: .5s;
 }
+
+.cards__button_visible_no{
+  display: none;
+}
+
 .cards__button:hover{
   cursor: pointer;
   opacity: .9;

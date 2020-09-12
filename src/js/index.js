@@ -1,39 +1,76 @@
 import '../css/style.css';
 
-// import { get } from 'http';
-import FormValidator from './components/FormValidator'; // импортируем класс с валидаторами форм
-import Popup from './components/Popup'; // импортируем класс с методами для попапов
+import FormValidator from './components/FormValidator';
+import Popup from './components/Popup';
 import MainApi from './api/MainApi';
 import OutApi from './api/OutApi';
 import Header from './components/Header';
 import SearchForm from './components/SearchForm';
+import Card from './components/Card';
 
-import getDateFrom from './utils/getDateFrom';
+import { getDateFrom, setArray, isAuth } from './utils/helpers';
 
 import {
-  popupContainer, menuContainer, loginButtonClass, signupButtonClass,
-} from './constants/elements'; // импорт контейнера попапа и классов кнопок
+  popupContainer, menuContainer,
+  loginButtonClass, signupButtonClass, sandwichButtonClass,
+  moreButtonClass, searchForm, exitButtonClass,
+} from './constants/elements';
+
 import {
-  loginMarkup, signupMarkup, successMarkup, loggedMenuMarkup, unloggedMenuMarkup,
+  loginMarkup, signupMarkup, popupLogMenuMarkup, popupUnlogMenuMarkup,
+  successMarkup, loggedMenuMarkup, unloggedMenuMarkup,
+  cardMarkup, cardsMarkup, noCardsMarkup, loaderMarkup,
 } from './constants/markups'; // импорт разметки
 import { errorsMessages } from './constants/errors'; // импортируем стили для вебпака
 
 const validator = new FormValidator(errorsMessages); // создаем валидатор, передаем тексты ошибок
 const mainApi = new MainApi();
 const outApi = new OutApi();
-const popup = new Popup(popupContainer, validator); // создаем методы обработки попапа
+const card = new Card(cardMarkup, cardsMarkup, mainApi, isAuth);
+const popup = new Popup(popupContainer, validator, card);
 const header = new Header(menuContainer);
-const searchForm = new SearchForm(outApi, getDateFrom);
+const search = new SearchForm();
 
-mainApi.getMe()
-  .then((data) => { if (data) { header.setMenu(loggedMenuMarkup, data.name); } })
-  .catch((err) => console.log(err)); // ставим хедер если есть токен и может получить имя
+let cardsArr = []; // массив найденных карточек
+let hiddenCards = 0; // количество скрытых карточек
+
+if (isAuth()) { // если у нас есть токен
+  mainApi.getMe()
+    .then((data) => { if (data) { header.setMenu(loggedMenuMarkup, data.name); } })
+    .catch((err) => console.log(err)); // ставим хедер с именем
+}
+
+search.setInputValue('');
+
+searchForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const searchText = search._getInputValue();
+  if (search._validateInput(searchText)) {
+    card.removeSection();
+    card.setSection(loaderMarkup);
+    outApi.getArticles(searchText, getDateFrom(7))
+      .then((res) => {
+        cardsArr = setArray(res, searchText);
+        card.removeSection();
+        if (cardsArr.length !== 0) {
+          card.setSection(cardsMarkup);
+          hiddenCards = cardsArr.length; // все карточки сразу после поиска скрыты
+          hiddenCards = card.addCardsLine(hiddenCards, cardsArr); // отрисовываем ряд карточек и пересчитываем скрытые карточки
+        } else {
+          card.setSection(noCardsMarkup);
+        }
+      });
+  } else {
+    this._setInputError(this.error);
+  }
+});
 
 document.addEventListener('click', (event) => {
+  console.log(event.target.className);
   if (event.target.className.includes(loginButtonClass)) {
     popup.setContent(loginMarkup);
     popup.open();
-    popup.setSubmitLogin(mainApi, header, loggedMenuMarkup);
+    popup.setSubmitLogin(mainApi, header, loggedMenuMarkup, cardsArr, hiddenCards);
   }
 
   if (event.target.className.includes(signupButtonClass)) {
@@ -41,22 +78,31 @@ document.addEventListener('click', (event) => {
     popup.open();
     popup.setSubmitSignup(mainApi, successMarkup);
   }
+
+  if (event.target.className.includes(moreButtonClass)) {
+    hiddenCards = card.addCardsLine(hiddenCards, cardsArr); // отрисовываем ряд карточек и пересчитываем скрытые карточки
+  }
+
+  if (event.target.className.includes(exitButtonClass)) {
+    localStorage.removeItem('token'); // удаление токена
+    header.setMenu(unloggedMenuMarkup); // замена хедера
+    if (document.querySelector('.cards__grid')) {
+      card.updateShowedCards(cardsArr, hiddenCards, false); // уже найденные карточки делаем неактивными
+    }
+    popup.close();
+  }
+
+  if (event.target.className.includes(sandwichButtonClass)) {
+    if (isAuth()) { // если у нас есть токен
+      mainApi.getMe()
+        .then((data) => {
+          if (data) { popup.setContent(popupLogMenuMarkup);
+            popup.setNameOnButton(data.name);}
+        } )
+        .catch((err) => console.log(err)); // ставим хедер с именем
+    }
+    else {
+    popup.setContent(popupUnlogMenuMarkup)}
+    popup.open();
+  }
 });
-
-
-searchForm.submitSearch();
-
-// активация иконок-закладок
-document.querySelectorAll('.cards__bookmark').forEach((item) => {
-  item.addEventListener('click', (event) => {
-    event.target.classList.toggle('cards__bookmark_clicked_on');
-    event.target.classList.toggle('cards__bookmark_clicked_off');
-  });
-});
-
-// const loginPopup = new Popup(popupLoginContainer, '.button_type_login', validator); // создаем попап для авторизации
-// const signupPopup = new Popup(popupSignupContainer, '.button_type_signup', validator); // создаем попап для регистрации
-// const menuPopup = new Popup(popupMenuContainer, '.button_type_menu'); // создаем попап для выпадающего меню
-
-
-// API key! 4117714a4686484785d1de46224edb53
